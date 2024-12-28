@@ -10,14 +10,15 @@ export default function Home() {
   const [columns, setColumns] = useState([]);
 
   // Column headers for each route
-  const routeColumns = {
-    "/posts": ["User ID", "ID", "Title", "Body"],
-    "/comments": ["Post ID", "ID", "Name", "Email", "Body"],
-    "/albums": ["User ID", "ID", "Title"],
-    "/photos": ["Album ID", "ID", "Title", "URL", "Thumbnail URL"],
-    "/todos": ["User ID", "ID", "Title", "Completed"],
-    "/users": ["ID", "Name", "Username", "Email", "Phone", "Website", "Company Name"],
+  const routeColumns: Record<string, string[]> = {
+    "/posts": ["userId", "id", "title", "body"],
+    "/comments": ["postId", "id", "name", "email", "body"],
+    "/albums": ["userId", "id", "title"],
+    "/photos": ["albumId", "id", "title", "url", "thumbnailUrl"],
+    "/todos": ["userId", "id", "title", "completed"],
+    "/users": ["id", "name", "username", "email", "address", "phone", "website", "company"],
   };
+  
 
   // Map data keys for each route
   const routeKeys = {
