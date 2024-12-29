@@ -1,33 +1,35 @@
-'use client'
-import { useState, useEffect } from "react";
+'use client';
+import { useState, useEffect } from 'react';
 
-export default function Home() {
+// Define a type for the routes
+type Route = '/posts' | '/comments' | '/albums' | '/photos' | '/todos' | '/users';
+
+const Home = () => {
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [showTable, setShowTable] = useState(false);
-  const [currentRoute, setCurrentRoute] = useState("/posts"); // Default route
+  const [currentRoute, setCurrentRoute] = useState<Route>('/posts'); // Default route
   const [inputs, setInputs] = useState({});
-  const [columns, setColumns] = useState([]);
+  const [columns, setColumns] = useState<string[]>([]);
 
   // Column headers for each route
-  const routeColumns: Record<string, string[]> = {
-    "/posts": ["userId", "id", "title", "body"],
-    "/comments": ["postId", "id", "name", "email", "body"],
-    "/albums": ["userId", "id", "title"],
-    "/photos": ["albumId", "id", "title", "url", "thumbnailUrl"],
-    "/todos": ["userId", "id", "title", "completed"],
-    "/users": ["id", "name", "username", "email", "address", "phone", "website", "company"],
+  const routeColumns: Record<Route, string[]> = {
+    '/posts': ['userId', 'id', 'title', 'body'],
+    '/comments': ['postId', 'id', 'name', 'email', 'body'],
+    '/albums': ['userId', 'id', 'title'],
+    '/photos': ['albumId', 'id', 'title', 'url', 'thumbnailUrl'],
+    '/todos': ['userId', 'id', 'title', 'completed'],
+    '/users': ['id', 'name', 'username', 'email', 'address', 'phone', 'website', 'company'],
   };
-  
 
   // Map data keys for each route
-  const routeKeys = {
-    "/posts": ["userId", "id", "title", "body"],
-    "/comments": ["postId", "id", "name", "email", "body"],
-    "/albums": ["userId", "id", "title"],
-    "/photos": ["albumId", "id", "title", "url", "thumbnailUrl"],
-    "/todos": ["userId", "id", "title", "completed"],
-    "/users": ["id", "name", "username", "email", "phone", "website", "company.name"],
+  const routeKeys: Record<Route, string[]> = {
+    '/posts': ['userId', 'id', 'title', 'body'],
+    '/comments': ['postId', 'id', 'name', 'email', 'body'],
+    '/albums': ['userId', 'id', 'title'],
+    '/photos': ['albumId', 'id', 'title', 'url', 'thumbnailUrl'],
+    '/todos': ['userId', 'id', 'title', 'completed'],
+    '/users': ['id', 'name', 'username', 'email', 'phone', 'website', 'company.name'],
   };
 
   // Fetch data on route change
@@ -39,11 +41,11 @@ export default function Home() {
         setData(result);
         setColumns(routeColumns[currentRoute] || []); // Set columns dynamically
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error('Error fetching data:', error);
       }
     };
     fetchData();
-  }, [currentRoute]);
+  }, [currentRoute, routeColumns]);
 
   // Filter data (currently no filtering keys provided for complex routes)
   const filterData = () => {
@@ -53,43 +55,26 @@ export default function Home() {
         const dataKey = routeKeys[currentRoute].find(
           (routeKey) => routeKey.toLowerCase() === key.toLowerCase()
         );
-  
+
         // If no data key is found or input is empty, skip this key
         if (!dataKey || !inputs[key]) return true;
-  
+
         // Handle exact match for numeric keys (e.g., id) and substring match for others
-        if (typeof item[dataKey] === "number") {
+        if (typeof item[dataKey] === 'number') {
           return item[dataKey] === Number(inputs[key]); // Exact match for numbers
         }
-  
-        if (typeof item[dataKey] === "string") {
-          return item[dataKey]
-            .toLowerCase()
-            .includes(inputs[key].toLowerCase()); // Substring match for strings
+
+        if (typeof item[dataKey] === 'string') {
+          return item[dataKey].toLowerCase().includes(inputs[key].toLowerCase()); // Substring match for strings
         }
-  
+
         return false; // If data type doesn't match
       });
     });
-  
+
     setFilteredData(filtered); // Update filtered data
     setShowTable(true); // Show the table
   };
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   // Clear page and reset state
   const clearPage = () => {
@@ -99,19 +84,24 @@ export default function Home() {
   };
 
   // Route Buttons
-  const routes = [
-    { name: "Posts", path: "/posts" },
-    { name: "Comments", path: "/comments" },
-    { name: "Albums", path: "/albums" },
-    { name: "Photos", path: "/photos" },
-    { name: "Todos", path: "/todos" },
-    { name: "Users", path: "/users" },
+  const routes: { name: string; path: Route }[] = [
+    { name: 'Posts', path: '/posts' },
+    { name: 'Comments', path: '/comments' },
+    { name: 'Albums', path: '/albums' },
+    { name: 'Photos', path: '/photos' },
+    { name: 'Todos', path: '/todos' },
+    { name: 'Users', path: '/users' },
   ];
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-5xl font-black text-white">Sunday Assignment <br />(Data Fetching through API, Static & Dynamic)</h1>
-      <br /><br />
+      <h1 className="text-5xl font-black text-white">
+        Sunday Assignment
+        <br />
+        (Data Fetching through API, Static & Dynamic)
+      </h1>
+      <br />
+      <br />
 
       <div className="flex space-x-4 mb-4">
         {routes.map((route) => (
@@ -122,7 +112,7 @@ export default function Home() {
               setShowTable(false);
             }}
             className={`px-4 py-2 rounded ${
-              currentRoute === route.path ? "bg-blue-700 text-white" : "bg-blue-500 text-white hover:bg-blue-600"
+              currentRoute === route.path ? 'bg-blue-700 text-white' : 'bg-blue-500 text-white hover:bg-blue-600'
             }`}
           >
             {route.name}
@@ -143,16 +133,13 @@ export default function Home() {
               <input
                 key={index}
                 name={col}
-                value={inputs[col] || ""}
+                value={inputs[col] || ''}
                 onChange={(e) => setInputs({ ...inputs, [col]: e.target.value })}
                 placeholder={col}
                 className="border px-2 py-1 rounded"
               />
             ))}
-            <button
-              onClick={filterData}
-              className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-            >
+            <button onClick={filterData} className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
               Show Data
             </button>
           </div>
@@ -181,9 +168,9 @@ export default function Home() {
                   <tr key={rowIndex}>
                     {routeKeys[currentRoute].map((key, colIndex) => (
                       <td key={colIndex} className="border px-4 py-2">
-                        {key.includes(".")
-                          ? key.split(".").reduce((acc, part) => acc?.[part], item) || "-"
-                          : item[key] || "-"}
+                        {key.includes('.')
+                          ? key.split('.').reduce((acc, part) => acc?.[part], item) || '-'
+                          : item[key] || '-'}
                       </td>
                     ))}
                   </tr>
@@ -195,4 +182,6 @@ export default function Home() {
       )}
     </div>
   );
-}
+};
+
+export default Home;
